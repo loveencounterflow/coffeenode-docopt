@@ -1,28 +1,33 @@
 {
-    "name": "docopt",
-    "version": "0.4.0",
-    "author": "Vladimir Keleshev <vladimir@keleshev.com>",
-    "contributors": [
-        {
-            "name": "Andrew Kassen",
-            "email": "atkassen@berkeley.edu"
-        },
-        {
-            "name": "Vladimir Keleshev",
-            "email": "vladimir@keleshev.com"
-        },
-        {
-            "name": "Stuart Carnie",
-            "email": "stuart.carnie@gmail.com"
-        }
-    ],
-    "description": "a command line option parser that will make you smile",
-    "main": "docopt.js",
-    "engines": { "node" : ">=0.8.0" },
-    "keywords": [ "command", "options", "argument", "args", "cli", "commandline" ],
-    "licenses": "MIT",
-    "repository" : {
-        "type": "git",
-        "url": "git://github.com/scarnie/docopt.coffee.git"
-    }
+  "name": "coffeenode-docopt",
+  "version": "0.0.0",
+  "description": "a command line option parser that will make you smile (improved)",
+  "keywords": [
+    "command",
+    "options",
+    "argument",
+    "args",
+    "cli",
+    "commandline"
+  ],
+  "main": "docopt.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/coffeenode-docopt.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/coffeenode-docopt/issues"
+  },
+  "homepage": "https://github.com/loveencounterflow/coffeenode-docopt",
+  "dependencies": {
+    "coffeenode-types": "^0.1.1"
+  }
 }

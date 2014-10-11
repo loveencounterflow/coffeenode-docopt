@@ -1,3 +1,23 @@
+
+############################################################################################################
+# njs_fs                    = require 'fs'
+# njs_path                  = require 'path'
+#...........................................................................................................
+TYPES                     = require 'coffeenode-types'
+TRM                       = require 'coffeenode-trm'
+rpr                       = TRM.rpr.bind TRM
+badge                     = 'DOCOPT'
+log                       = TRM.get_logger 'plain',   badge
+info                      = TRM.get_logger 'info',    badge
+alert                     = TRM.get_logger 'alert',   badge
+debug                     = TRM.get_logger 'debug',   badge
+warn                      = TRM.get_logger 'warn',    badge
+urge                      = TRM.get_logger 'urge',    badge
+whisper                   = TRM.get_logger 'whisper', badge
+help                      = TRM.get_logger 'help',    badge
+echo                      = TRM.echo.bind TRM
+
+
 print = -> console.log [].join.call arguments, ' '
 
 atos = Array.prototype.toString
@@ -442,15 +462,21 @@ formal_usage = (printable_usage) ->
     pu = printable_usage.split(/\s+/)[1..]  # split and drop "usage:"
     ((if s == pu[0] then '|' else s) for s in pu[1..]).join ' '
 
-extras = (help, version, options, doc) ->
+#-----------------------------------------------------------------------------------------------------------
+report_extras = ( help, version, options, doc ) ->
     opts = {}
     opts[opt.name()] = true for opt in options when opt.value
     if help and (opts['--help'] or opts['-h'])
-        print doc.replace /^\s*|\s*$/, ''
-        process.exit()
-    if version and opts['--version']
+        if TYPES.isa_function help
+            help()
+            return false
+        else
+            print doc.replace /^\s*|\s*$/, ''
+            process.exit()
+    else if version and opts['--version']
         print version
         process.exit()
+    return true
 
 class Dict extends Object
 
@@ -462,34 +488,34 @@ class Dict extends Object
         atts.sort()
         '{' + (k + ': ' + @[k] for k in atts).join(',\n ') + '}'
 
-docopt = (doc, kwargs={}) ->
+docopt = (doc, Q={}) ->
     allowedargs = ['argv', 'name', 'help', 'version']
-    throw new Error "unrecognized argument to docopt: " for arg of kwargs \
+    throw new Error "unrecognized argument to docopt: " for arg of Q \
         when arg not in allowedargs
 
-    argv    = if kwargs.argv is undefined \
-              then process.argv[2..] else kwargs.argv
-    name    = if kwargs.name is undefined \
-              then null else kwargs.name
-    help    = if kwargs.help is undefined \
-              then true else kwargs.help
-    version = if kwargs.version is undefined \
-              then null else kwargs.version
+    ### TAINT use `?` or *really* test for `undefined`? ###
+    argv    = if Q.argv    is undefined then process.argv[2..] else Q.argv
+    name    = if Q.name    is undefined then null              else Q.name
+    help    = if Q.help    is undefined then true              else Q.help
+    version = if Q.version is undefined then null              else Q.version
 
-    usage = printable_usage doc, name
-    pot_options = parse_doc_options doc
-    formal_pattern   = parse_pattern formal_usage(usage), pot_options
-
-    argv = parse_args argv, pot_options
-    extras help, version, argv, doc
-    [matched, left, argums] = formal_pattern.fix().match argv
-    if matched and left.length is 0  # better message if left?
-        options = (opt for opt in argv when opt.constructor is Option)
-        pot_arguments = (a for a in formal_pattern.flat() \
-            when a.constructor in [Argument, Command])
-        parameters = [].concat pot_options, options, pot_arguments, argums
-        return new Dict([a.name(), a.value] for a in parameters)
-    throw new DocoptExit usage
+    usage           = printable_usage doc, name
+    pot_options     = parse_doc_options doc
+    formal_pattern  = parse_pattern ( formal_usage usage ), pot_options
+    argv            = parse_args argv, pot_options
+    go_on           = report_extras help, version, argv, doc
+    #.......................................................................................................
+    if go_on
+        [ matched, left, collected ] = formal_pattern.fix().match argv
+        if matched and left.length is 0  # better message if left?
+            options = (opt for opt in argv when opt.constructor is Option)
+            pot_arguments = ( a for a in formal_pattern.flat()  when a.constructor in [Argument, Command] )
+            parameters = [].concat pot_options, options, pot_arguments, collected
+            return new Dict([a.name(), a.value] for a in parameters)
+        if TYPES.isa_function help
+            help left, collected
+            return null
+        throw new DocoptExit usage
 
 module.exports =
     docopt       : docopt
