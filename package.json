@@ -1,6 +1,6 @@
 {
   "name": "coffeenode-docopt",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "a command line option parser that will make you smile (improved)",
   "keywords": [
     "command",
@@ -28,6 +28,6 @@
   },
   "homepage": "https://github.com/loveencounterflow/coffeenode-docopt",
   "dependencies": {
-    "coffeenode-types": "^0.1.1"
+    "cnd": "^1.0.8"
   }
 }

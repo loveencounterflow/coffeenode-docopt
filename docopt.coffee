@@ -3,19 +3,18 @@
 # njs_fs                    = require 'fs'
 # njs_path                  = require 'path'
 #...........................................................................................................
-TYPES                     = require 'coffeenode-types'
-TRM                       = require 'coffeenode-trm'
-rpr                       = TRM.rpr.bind TRM
+CND                       = require 'cnd'
+rpr                       = CND.rpr.bind CND
 badge                     = 'DOCOPT'
-log                       = TRM.get_logger 'plain',   badge
-info                      = TRM.get_logger 'info',    badge
-alert                     = TRM.get_logger 'alert',   badge
-debug                     = TRM.get_logger 'debug',   badge
-warn                      = TRM.get_logger 'warn',    badge
-urge                      = TRM.get_logger 'urge',    badge
-whisper                   = TRM.get_logger 'whisper', badge
-help                      = TRM.get_logger 'help',    badge
-echo                      = TRM.echo.bind TRM
+log                       = CND.get_logger 'plain',   badge
+info                      = CND.get_logger 'info',    badge
+alert                     = CND.get_logger 'alert',   badge
+debug                     = CND.get_logger 'debug',   badge
+warn                      = CND.get_logger 'warn',    badge
+urge                      = CND.get_logger 'urge',    badge
+whisper                   = CND.get_logger 'whisper', badge
+help                      = CND.get_logger 'help',    badge
+echo                      = CND.echo.bind CND
 
 
 print = -> console.log [].join.call arguments, ' '
@@ -467,7 +466,7 @@ report_extras = ( help, version, options, doc ) ->
     opts = {}
     opts[opt.name()] = true for opt in options when opt.value
     if help and (opts['--help'] or opts['-h'])
-        if TYPES.isa_function help
+        if CND.isa_function help
             help()
             return false
         else
@@ -512,7 +511,7 @@ docopt = (doc, Q={}) ->
             pot_arguments = ( a for a in formal_pattern.flat()  when a.constructor in [Argument, Command] )
             parameters = [].concat pot_options, options, pot_arguments, collected
             return new Dict([a.name(), a.value] for a in parameters)
-        if TYPES.isa_function help
+        if CND.isa_function help
             help left, collected
             return null
         throw new DocoptExit usage
