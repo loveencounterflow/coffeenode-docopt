@@ -1,6 +1,6 @@
 {
   "name": "coffeenode-docopt",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "a command line option parser that will make you smile (improved)",
   "keywords": [
     "command",
