@@ -28,6 +28,6 @@
   },
   "homepage": "https://github.com/loveencounterflow/coffeenode-docopt",
   "dependencies": {
-    "cnd": "^1.0.8"
+    "cnd": "^4.6.0"
   }
 }
